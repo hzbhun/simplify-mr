@@ -16,8 +16,7 @@ $array = [
     'desc' => isset($params[2]) ?  implode(' ', array_slice($params, 2)) : '',
     'owner' => $users[$_POST['user_name']] ?? ''
 ];
-
-file_get_contents("https://script.google.com/macros/s//exec?" . http_build_query($array));
+file_get_contents(getenv("SHEET_URL") . "?" . http_build_query($array));
 
 $data = array('text' => ':CR: please: ' . $array['mr']);
 $options = array(
@@ -28,4 +27,4 @@ $options = array(
     )
 );
 $context = stream_context_create($options);
-file_get_contents('https://hooks.slack.com/services/', false, $context);
+file_get_contents(getenv("SLACK_URL"), false, $context);
