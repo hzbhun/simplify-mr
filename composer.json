@@ -1,0 +1,8 @@
+{
+  "name": "hzbhun/simplify-mr",
+  "type": "project",
+  "license": "proprietary",
+  "require": {
+    "php": "~7.0"
+  }
+}

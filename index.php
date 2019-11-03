@@ -18,13 +18,13 @@ $array = [
 ];
 file_get_contents(getenv("SHEET_URL") . "?" . http_build_query($array));
 
-$data = array('text' => ':CR: please: ' . $array['mr']);
-$options = array(
-    'http' => array(
+$data = ['text' => ':CR: please: ' . $array['mr']];
+$options = [
+    'http' => [
         'header'  => "Content-type: application/json\r\n",
         'method'  => 'POST',
         'content' => json_encode($data),
-    )
-);
+    ]
+];
 $context = stream_context_create($options);
 file_get_contents(getenv("SLACK_URL"), false, $context);
