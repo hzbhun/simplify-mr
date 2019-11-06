@@ -4,6 +4,7 @@
   "license": "proprietary",
   "require": {
     "php": "~7.0",
+    "ext-json": "*",
     "guzzlehttp/guzzle": "6.4.*"
   }
 }

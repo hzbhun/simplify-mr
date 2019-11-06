@@ -33,18 +33,20 @@ class SimplifyMr
                 'timeout' => 10,
             ],
             'fulfilled' => function (ResponseInterface $response, $index) use (&$results) {
-
+                $results[$index] = $response;
             },
             'rejected' => function (RequestException $e, $index) use (&$results) {
 
             },
         ]);
         $pool->promise()->wait();
+
+        print_r(array_keys($results));
     }
 
     protected function ackRequest()
     {
-        echo "OK";
+        echo "";
         ob_flush();
         flush();
     }
@@ -70,7 +72,10 @@ class SimplifyMr
 
     protected function getSpreadSheetRequest(array $input)
     {
-        $data = array_merge($input, ['owner' => self::$usersInSpreadSheet[$_POST['user_name']] ?? '']);
+        $data = array_merge($input, [
+            'owner' => self::$usersInSpreadSheet[$_POST['user_name']] ?? '',
+            'desc' =>  $input['description']
+        ]);
         $spreadSheetUri = new Uri(getenv("SHEET_URL"));
 
         return new Request(
@@ -79,13 +84,28 @@ class SimplifyMr
         );
     }
 
+    protected function getSlackEndCommandRequest($url)
+    {
+        $data = [
+            'text' => 'OKÉ',
+            "response_type" => "ephemeral"
+        ];
+
+        return $this->getSlackRequest($url, $data);
+    }
+
     protected function getSlackNotificationRequest(array $input)
     {
         $data = ['text' => ':CR: please: ' . $input['mr']];
 
+        return $this->getSlackRequest(getenv("SLACK_URL_TESZT"), $data);
+    }
+
+    protected function getSlackRequest($url, array $data)
+    {
         return new Request(
             "POST",
-            getenv("SLACK_URL_TESZT"),
+            $url,
             ['content-type' => 'application/json'],
             json_encode($data)
         );
