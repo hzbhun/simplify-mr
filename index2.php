@@ -13,6 +13,9 @@ $simplifyMr->saveMr();
 
 class SimplifyMr
 {
+    const SPREADSHEET_REQUEST = 'spreadsheet';
+    const NOTIFICATION_REQUEST = 'notification';
+
     public static $usersInSpreadSheet = [
         'hegedus.zoltan' => 'G',
         'kelemen.gabor' => 'H',
@@ -20,13 +23,20 @@ class SimplifyMr
         'hajdu.robert' => 'F'
     ];
 
+    private $client;
+
+    public function __construct()
+    {
+        $this->client = new Client();
+    }
+
     public function saveMr()
     {
         $this->ackRequest();
 
         $input = $this->parseInput($_POST['text']);
         $results = [];
-        $pool = new Pool(new Client(), $this->getRequests($input), [
+        $pool = new Pool($this->client, $this->getRequests($input), [
             'concurrency' => 2,
             'options' => [
                 'connect_timeout' => 5,
@@ -41,7 +51,7 @@ class SimplifyMr
         ]);
         $pool->promise()->wait();
 
-        print_r(array_keys($results));
+        $this->client->send($this->getSlackEndCommandRequest($_POST['response_url']));
     }
 
     protected function ackRequest()
@@ -65,8 +75,8 @@ class SimplifyMr
     protected function getRequests(array $input)
     {
         return [
-            'spreadsheet' => $this->getSpreadSheetRequest($input),
-            'notification' => $this->getSlackNotificationRequest($input)
+            self::SPREADSHEET_REQUEST => $this->getSpreadSheetRequest($input),
+            self::NOTIFICATION_REQUEST => $this->getSlackNotificationRequest($input)
         ];
     }
 
