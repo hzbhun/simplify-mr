@@ -22,7 +22,8 @@ class SimplifyMr
 
     public function saveMr()
     {
-        $startTime = microtime(true);
+        $this->ackRequest();
+
         $input = $this->parseInput($_POST['text']);
         $results = [];
         $pool = new Pool(new Client(), $this->getRequests($input), [
@@ -39,8 +40,13 @@ class SimplifyMr
             },
         ]);
         $pool->promise()->wait();
+    }
 
-        echo "Done " . (microtime(true) - $startTime);
+    protected function ackRequest()
+    {
+        echo "OK";
+        ob_flush();
+        flush();
     }
 
     protected function parseInput($slackText)
