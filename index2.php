@@ -51,7 +51,11 @@ class SimplifyMr
         ]);
         $pool->promise()->wait();
 
-        $this->client->send($this->getSlackEndCommandRequest($_POST['response_url']));
+        if (count($results) == 2) {
+            $this->client->send($this->getSlackEndCommandRequest($_POST['response_url'], 'Sikeresen hozzáadva a táblázathoz.'));
+        } else {
+            $this->client->send($this->getSlackEndCommandRequest($_POST['response_url'], 'Valami probléma történt...'));
+        }
     }
 
     protected function ackRequest()
@@ -94,10 +98,10 @@ class SimplifyMr
         );
     }
 
-    protected function getSlackEndCommandRequest($url)
+    protected function getSlackEndCommandRequest($url, $text)
     {
         $data = [
-            'text' => 'OKÉ',
+            'text' => $text,
             "response_type" => "ephemeral"
         ];
 
