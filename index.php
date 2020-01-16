@@ -17,10 +17,9 @@ class SimplifyMr
     const NOTIFICATION_REQUEST = 'notification';
 
     public static $usersInSpreadSheet = [
-        'hegedus.zoltan' => 'G',
-        'kelemen.gabor' => 'H',
-        'feher.zoltan' => 'E',
-        'hajdu.robert' => 'F'
+        'hegedus.zoltan' => 'F',
+        'kelemen.gabor' => 'G',
+        'hajdu.robert' => 'E'
     ];
 
     private $client;
